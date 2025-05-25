@@ -1,11 +1,16 @@
-import Navbar from "@/components/Navbar";
 import MainPage from "@/components/MainPage";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/nextjs";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-black">
-      <Navbar />
-      <MainPage />
-    </div>
+    <>
+      <SignedIn>
+        <MainPage />
+      </SignedIn>
+
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
   );
 }

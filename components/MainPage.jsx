@@ -1,12 +1,18 @@
-// /components/MainPage.jsx
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { deleteRecord, getRecords } from "../utils/recordsFunctions";
+import { useUser } from "@clerk/nextjs";
 
 const MainPage = () => {
   const router = useRouter();
   const [records, setRecords] = useState([]);
+  const { isSignedIn, isLoaded } = useUser();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/sign-in");
+    }
+  }, [isLoaded, isSignedIn, router]);
 
   const fetchRecords = async () => {
     try {
@@ -34,8 +40,14 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    fetchRecords();
-  }, []);
+    if (isSignedIn) {
+      fetchRecords();
+    }
+  }, [isSignedIn]);
+
+  if (!isLoaded || !isSignedIn) {
+    return <div className="text-center p-8 text-white">Se încarcă...</div>;
+  }
 
   return (
     <div className="p-4 flex flex-wrap gap-4">
